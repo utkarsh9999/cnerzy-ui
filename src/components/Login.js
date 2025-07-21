@@ -25,7 +25,7 @@ export default function Login() {
                     <h2 className="text-center">Login</h2>
                 </div>
                 <div className="col-md-6">
-                    <h2 className="text-center">Login</h2>
+                    <h2 className="text-center">der</h2>
                 </div>
             </div>
         </div>
