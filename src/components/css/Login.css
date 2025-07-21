@@ -1,0 +1,32 @@
+#imgback{
+    border-radius: 1em !important;
+    overflow:hidden;
+}
+#fontsat{
+    font-family: 'Satoshi';
+    font-style: normal;
+    font-weight: normal;
+}
+.custom-focus:focus {
+    border-color: #1A1A52 !important;
+    box-shadow: 0 0 0 0.1rem rgba(26, 26, 82, 0.25) !important;
+}
+@media (max-width: 991px) {
+    .pad {
+        padding-left: 140px;
+        padding-right: 140px;
+    }
+}
+
+@media (max-width: 767px) {
+    .pad {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+@media (min-width: 768px) {
+    .pad {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
