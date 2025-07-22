@@ -30,3 +30,23 @@
         padding-right: 40px;
     }
 }
+
+.custom-focus:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.error-box {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+    border-radius: 4px;
+    font-size: 13px;
+    height: auto;
+    min-height: 48px;
+    cursor: pointer;
+}
