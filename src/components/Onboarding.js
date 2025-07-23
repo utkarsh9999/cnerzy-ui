@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   const [selectedBox, setSelectedBox] = useState(null);
   const boxes = [
     { id: 1, label: "Buy", svg: "/images/buy.svg" },
@@ -14,6 +15,11 @@ export default function Onboarding() {
   const handleBoxClick = (id) => {
     setSelectedBox(id);
   };
+  const handleSubmit = (e) => {
+        e.preventDefault();
+       
+        navigate("/signup")
+    };
 
   return (
     <div className="container-fluid ">
@@ -51,12 +57,15 @@ export default function Onboarding() {
             </div>
 
             <div className="w-100" style={{ maxWidth: "400px" }}>
-              <input
+             <form onSubmit={handleSubmit} >
+                  <input
                 type="email"
                 className="form-control mb-3 border-2 no-focus-border"
                 placeholder="name@company.com"
               />
-              <button className="btn btn-dark w-100 mb-3">Continue</button>
+              <button className="btn btn-dark w-100 mb-3" type="submit" >Continue</button>
+              </form>
+            
               <p className="text-muted text-center small">
                 By proceeding, you agree to the{' '}
                 <br/>

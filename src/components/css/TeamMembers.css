@@ -1,0 +1,44 @@
+
+        .custom-focus:focus {
+          box-shadow: none !important;
+          outline: none !important;
+        }
+
+        .merged-input {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          overflow: hidden;
+          background-color: #f9f9f9;
+        }
+
+        select.form-select,
+select.form-select option {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+
+       
+        .remove-btn {
+          position: absolute;
+          right: -24px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          font-size: 18px;
+          color: #fbf9f9;
+        }
+
+        .add-another {
+          color: #000000;
+          cursor: pointer;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+        }
+
+        .add-another img {
+          width: 14px;
+          height: 14px;
+        }

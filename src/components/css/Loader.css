@@ -1,0 +1,39 @@
+
+        .blended-spinner {
+          width: 210px;
+          height: 210px;
+          border-radius: 50%;
+          position: relative;
+          background: conic-gradient(
+            #d6d6db 0deg,
+            #d6d6db 120deg,
+            #f43505 240deg,
+            #d6d6db 360deg
+          );
+          -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), black 0);
+          mask: radial-gradient(farthest-side, transparent calc(100% - 4px), black 0);
+          animation: spin 1s linear infinite;
+        }
+
+        .blended-spinner::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: conic-gradient(
+            #d6d6db 0deg,
+            #d6d6db 120deg,
+            #f43505 240deg,
+            #d6d6db 360deg
+          );
+          filter: blur(8px);
+          z-index: -1;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
