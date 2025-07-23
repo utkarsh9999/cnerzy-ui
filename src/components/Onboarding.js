@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/Login.css";
+import { Link } from "react-router-dom";
 
 export default function Onboarding() {
   const [selectedBox, setSelectedBox] = useState(null);
@@ -71,7 +72,11 @@ export default function Onboarding() {
             style={{ paddingLeft: "2rem", paddingRight: "2rem" }}
           >
             <span className="text-muted">Already have an account? </span>
-            <a href="/login" className="text-dark text-decoration-underline">Log in</a>
+            <Link to="/login" className="text-dark text-decoration-underline">
+              Log in
+            </Link>
+            
+         
           </p>
         </div>
 

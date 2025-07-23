@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState("");
@@ -53,7 +53,10 @@ export default function ForgotPassword() {
 
                     <p className="position-absolute start-0 bottom-0 w-100 text-center mb-3" style={{ paddingLeft: "2rem", paddingRight: "2rem" }}>
                         <span className="text-muted">Remember your password? </span>
-                        <a href="/login" className="text-dark text-decoration-underline">Back to log in</a>
+                        <Link to="/login" className="text-dark text-decoration-underline">
+                            Back to log in
+                        </Link>
+                       
                     </p>
                 </div>
 <div className="col-md-6 d-none d-md-block d-flex align-items-center justify-content-center p-4">

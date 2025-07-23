@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SetNewPassword() {
     const [newPassword, setNewPassword] = useState("");
@@ -140,7 +140,10 @@ export default function SetNewPassword() {
 
                     <p className="position-absolute start-0 bottom-0 w-100 text-center mb-3" style={{ paddingLeft: "2rem", paddingRight: "2rem" }}>
                         <span className="text-muted">Go back to </span>
-                        <a href="/login" className="text-dark text-decoration-underline">Log in</a>
+                        <Link to="/login" className="text-dark text-decoration-underline">
+                            Login
+                        </Link>
+                       
                     </p>
                 </div>
 

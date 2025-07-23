@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./css/Login.css";
 
 export default function Login() {
@@ -145,7 +145,10 @@ export default function Login() {
                                     <label htmlFor="password" className={`form-label fw-semibold mb-2 ${passwordError ? "text-danger" : ""}`}>
                                         Enter password
                                     </label>
-                                    <a href="/forget-password" className="small text-muted">Forgot password..?</a>
+                                    <Link to="/forget-password" className="small text-muted">
+                                        Forgot password?
+                                    </Link>
+                                   
                                 </div>
                                 <div className="input-icon-wrapper">
                                     <input
@@ -184,7 +187,10 @@ export default function Login() {
 
                     <p className="position-absolute start-0 bottom-0 w-100 text-center mb-3" style={{ paddingLeft: "2rem", paddingRight: "2rem" }}>
                         <span className="text-muted">Don’t have an account? </span>
-                        <a href="/onboarding" className="text-dark text-decoration-underline">Sign up</a>
+                        <Link to="/onboarding" className="text-dark text-decoration-underline">
+                            Sign up
+                        </Link>
+
                     </p>
                 </div>
 <div className="col-md-6 d-none d-md-block d-flex align-items-center justify-content-center p-4">
