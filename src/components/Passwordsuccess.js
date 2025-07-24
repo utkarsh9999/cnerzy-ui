@@ -15,7 +15,7 @@ export default function PasswordSuccess() {
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
                     <div className="text-center">
                         <div className="success-icon-svg mb-4">
-                          <img src="/images/Icon Set copy.svg"/>
+                          <img src="/images/Icon Set copy.svg" alt="check_icon" />
 
                         </div>
 
