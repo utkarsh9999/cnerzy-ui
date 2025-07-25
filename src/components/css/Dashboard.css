@@ -1,9 +1,21 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 240px;
+  height: 100%;
   background-color: #fff;
-  min-height: 100vh;
   transition: all 0.3s ease;
   z-index: 1050;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
 }
 
 .sidebar.collapsed {
@@ -27,7 +39,6 @@
 .sidebar .nav-item img {
   width: 20px;
   height: 20px;
-
 }
 
 .sidebar .nav-item span {
@@ -47,7 +58,6 @@
   color: white;
 }
 
-/* Submenu styling */
 .sidebar .submenu {
   font-size: 0.9rem;
   margin-top: 4px;
@@ -77,24 +87,32 @@
   height: 24px;
 }
 
+.main-content-area {
+  margin-left: 240px;
+  flex-grow: 1;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: margin-left 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.main-content-area.collapsed {
+  margin-left: 70px;
+}
 
 @media (max-width: 767px) {
   .sidebar {
-    position: fixed;
-    left: -100%;
-    top: 0;
-    height: 100%;
-    width: 240px;
-    transition: left 0.3s ease;
-    z-index: 999;
+    left: -240px;
   }
 
   .sidebar.mobile-open {
     left: 0;
-    box-shadow: 0 0 27px rgb(204 204 204 / 30%);
+    box-shadow: 0 0 27px rgb(0 0 0 / 30%);
   }
 
-  .main-area {
-    width: 100%;
+  .main-content-area,
+  .main-content-area.collapsed {
+    margin-left: 0;
   }
 }

@@ -11,13 +11,12 @@ export default function DashboardLayout() {
   const [activeItem, setActiveItem] = useState("dashboard");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  const handleResize = () => {
-    const mobile = window.innerWidth < 768;
-    setIsMobile(mobile);
-    setCollapsed(mobile);
-  };
-
   useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      setCollapsed(mobile);
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -34,17 +33,15 @@ export default function DashboardLayout() {
 
   const getBreadcrumb = () => {
     if (["robo", "my", "sell"].includes(activeItem)) {
-      let label = "";
-      if (activeItem === "robo") label = "RoboProject";
-      if (activeItem === "my") label = "MyProject";
-      if (activeItem === "sell") label = "Sells";
-      return `Projects > ${label}`;
+      if (activeItem === "robo") return "Projects > RoboProject";
+      if (activeItem === "my") return "Projects > MyProject";
+      if (activeItem === "sell") return "Projects > Sells";
     }
     return activeItem.charAt(0).toUpperCase() + activeItem.slice(1);
   };
 
   return (
-    <div className="d-flex">
+    <div className="dashboard-layout">
       <Sidebar
         collapsed={collapsed}
         activeItem={activeItem}
@@ -52,9 +49,9 @@ export default function DashboardLayout() {
         toggleSidebar={toggleSidebar}
         isMobile={isMobile}
       />
-      <div className="flex-grow-1 main-area w-calculate(100vw - 260px)" style={{ marginLeft: collapsed ? 0 : 260 }}>
-        <div className="main-header d-flex justify-content-between align-items-center px-3 py-2 shadow-sm flex-wrap">
-          <div className="d-flex p-2 align-items-center flex-shrink-1">
+      <div className={`main-content-area  ${collapsed ? "collapsed" : ""}`}>
+        <div className="main-header d-flex justify-content-between align-items-center px-3 py-2 shadow-sm flex-wrap w-100 gap-2">
+          <div className="d-flex align-items-center flex-shrink-1">
             {isMobile && (
               <button className="btn btn-sm p-0 border-0 bg-transparent" onClick={toggleSidebar}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -64,20 +61,36 @@ export default function DashboardLayout() {
                 </svg>
               </button>
             )}
-            <div className="breadcrumb-text ms-2 d-flex align-items-center gap-2 flex-nowrap">
+            <div className="breadcrumb-text ms-2 d-flex align-items-center gap-2 flex-nowrap" style={{ minWidth: 0 }}>
               <img src="/images/home.svg" alt="home" />
-              <span className="text-truncate" style={{ maxWidth: "calc(100vw - 200px)" }}>{getBreadcrumb()}</span>
+              <span className="text-truncate d-inline-block" style={{ maxWidth: "calc(100vw - 150px)" }}>
+                {getBreadcrumb()}
+              </span>
             </div>
           </div>
-          <div className="header-right d-flex align-items-center gap-3 flex-shrink-0 mt-2 mt-md-0">
-            <img src="/images/search.svg" alt="search" />
-            <img src="/images/notification.svg" alt="notif" />
-            <img src="/images/profile.svg" alt="profile" />
-          </div>
+       <div className="header-right d-flex align-items-center gap-3 flex-shrink-0">
+  <img src="/images/search.svg" alt="search" className="d-inline-block" style={{ width: isMobile ? "18px" : "24px", height: isMobile ? "18px" : "24px" }} />
+  <img src="/images/notification.svg" alt="notif" className="d-inline-block" style={{ width: isMobile ? "18px" : "24px", height: isMobile ? "18px" : "24px" }} />
+  <img src="/images/profile.svg" alt="profile" className="d-inline-block" style={{ width: isMobile ? "22px" : "28px", height: isMobile ? "22px" : "28px" }} />
+</div>
+
         </div>
-        
         <div className="main-content px-4 py-2">{renderContent()}</div>
       </div>
+      {!collapsed && isMobile && (
+        <div
+          onClick={toggleSidebar}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.4)",
+            zIndex: 998
+          }}
+        />
+      )}
     </div>
   );
 }

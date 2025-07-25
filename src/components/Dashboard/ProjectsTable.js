@@ -8,22 +8,6 @@ const sampleData = [
   { id: "PRGR-0028D23", price: "$725.00", progress: 20, status: "In Execution" },
   { id: "PRGR-0265K81", price: "$2000.00", progress: 40, status: "Done" },
   { id: "PRGR-4789Z10", price: "$3200.00", progress: 70, status: "In Execution" },
-  { id: "PRGR-3157J84", price: "$2100.00", progress: 90, status: "In Execution" },
-  { id: "PRGR-0028D23", price: "$725.00", progress: 20, status: "In Execution" },
-  { id: "PRGR-0265K81", price: "$2000.00", progress: 40, status: "Done" },
-  { id: "PRGR-4789Z10", price: "$3200.00", progress: 70, status: "In Execution" },
-  { id: "PRGR-3157J84", price: "$2100.00", progress: 90, status: "In Execution" },
-  { id: "PRGR-0028D23", price: "$725.00", progress: 20, status: "In Execution" },
-  { id: "PRGR-0265K81", price: "$2000.00", progress: 40, status: "Done" },
-  { id: "PRGR-4789Z10", price: "$3200.00", progress: 70, status: "In Execution" },
-  { id: "PRGR-3157J84", price: "$2100.00", progress: 90, status: "In Execution" },
-  { id: "PRGR-0028D23", price: "$725.00", progress: 20, status: "In Execution" },
-  { id: "PRGR-0265K81", price: "$2000.00", progress: 40, status: "Done" },
-  { id: "PRGR-4789Z10", price: "$3200.00", progress: 70, status: "In Execution" },
-  { id: "PRGR-3157J84", price: "$2100.00", progress: 90, status: "In Execution" },
-  { id: "PRGR-0028D23", price: "$725.00", progress: 20, status: "In Execution" },
-  { id: "PRGR-0265K81", price: "$2000.00", progress: 40, status: "Done" },
-  { id: "PRGR-4789Z10", price: "$3200.00", progress: 70, status: "In Execution" },
   { id: "PRGR-3157J84", price: "$2100.00", progress: 90, status: "In Execution" }
 ];
 
@@ -54,32 +38,27 @@ export default function ProjectsTable() {
     setSelectedRows(updated);
   };
 
-  
-
-
   return (
-    <div className="border rounded-4 shadow-sm bg-white p-3 mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h6 className="fw-semibold mb-0">Projects</h6>
+    <div className="border rounded-4 shadow-sm bg-white p-3 mb-3 mt-5">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+  <h6 className="fw-semibold mb-0">Projects</h6>
+  <div className="d-flex border rounded-2" style={{ maxWidth: 240, width: "100%" }}>
+    <img src="/images/search.svg" alt="Search" className="me-2 ms-2" />
+    <input
+      autoComplete="off"
+      type="text"
+      className="form-control form-control-sm border-0"
+      placeholder="Search..."
+      value={search}
+      onChange={(e) => {
+        setSearch(e.target.value);
+        setCurrentPage(1);
+      }}
+      style={{ width: "100%", outline: "none", boxShadow: "none" }}
+    />
+  </div>
+</div>
 
-        <div  className="d-flex border rounded-2"  style={{ maxWidth: 200 }}>
-<img src="/images/search.svg" alt="Search" className="me-2"  />
-
-<input 
-  autoComplete="off"
-  type="text"
-  className="form-control form-control-sm border-0"
-  placeholder="Search..."
-  value={search}
-  onChange={(e) => {
-    setSearch(e.target.value);
-    setCurrentPage(1);
-  }}
-  style={{ width: "100%", outline: "none", boxShadow: "none" }}
-/>
-
-        </div>
-      </div>
       <div className="table-responsive">
         <table className="table align-middle">
           <thead>
@@ -153,7 +132,7 @@ export default function ProjectsTable() {
       </div>
 
       <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <span>Show</span>
           <select
             className="form-select form-select-sm"
@@ -175,7 +154,7 @@ export default function ProjectsTable() {
           </select>
           <span>per page</span>
         </div>
-        <div className="d-flex align-items-center gap-2">
+        <div className="d-flex align-items-center gap-2 flex-wrap justify-content-end">
           <span className="text-muted" style={{ fontSize: "0.9rem" }}>
             {(currentPage - 1) * perPage + 1}-{Math.min(currentPage * perPage, filtered.length)} of {filtered.length}
           </span>

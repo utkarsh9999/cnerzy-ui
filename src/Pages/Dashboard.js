@@ -69,7 +69,7 @@ export default function Dashboard() {
             <div className="border border-1 shadow-sm rounded-4 w-100 d-flex flex-column justify-content-between">
               <div className="d-flex flex-wrap align-items-center px-4 justify-content-between">
                 <div className="d-flex flex-column justify-content-between" style={{ width: "55%" }}>
-                  <div className="d-flex mb-3">
+                  <div className="d-flex mb-3 mt-3">
                     <img src="/images/avatar1.svg" alt="Avatar 1" className="rounded-circle border" style={{ width: 40, height: 40, marginRight: -10, zIndex: 4 }} />
                     <img src="/images/avatar2.svg" alt="Avatar 2" className="rounded-circle border" style={{ width: 40, height: 40, marginRight: -10, zIndex: 3 }} />
                     <img src="/images/avatar3.svg" alt="Avatar 3" className="rounded-circle border" style={{ width: 40, height: 40, marginRight: -10, zIndex: 2 }} />
@@ -84,7 +84,7 @@ export default function Dashboard() {
                   <img src="/images/dashboardRightSide.svg" className="img-fluid" alt="sideimage" />
                 </div>
               </div>
-              <div className="text-center py-2 border-top">
+              <div className="text-center py-2 mb-1 border-top">
                 <span className="fw-semibold" style={{ textDecoration: "underline dotted" }}>
                   Invite New Team Member
                 </span>
