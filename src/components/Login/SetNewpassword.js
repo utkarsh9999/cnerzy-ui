@@ -1,65 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { Auth } from "aws-amplify";
 
-export default function SetNewPassword({ data, setData, onSubmit }) {
+export default function SetNewPassword({ data, setData, onNext }) {
   const [error, setError] = useState("");
-  const [newTouched, setNewTouched] = useState(false);
-  const [confirmTouched, setConfirmTouched] = useState(false);
-  const confirmRef = useRef(null);
+  const [showError, setShowError] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const isPasswordValid = (password) => {
-    return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+  const isValidPassword = (password) => {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
   };
 
-  const handleNewPasswordChange = (e) => {
-    const value = e.target.value;
-    setData({ ...data, password: value });
-    setNewTouched(true);
-
-    if (!isPasswordValid(value)) {
-      setError("Password must be at least 8 characters and include a letter, a number, and a special character.");
-    } else if (data.confirmPassword && value !== data.confirmPassword) {
-      setError("Passwords do not match.");
-    } else {
-      setError("");
-    }
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    setData({ ...data, confirmPassword: value });
-    setConfirmTouched(true);
-
-    if (!isPasswordValid(data.password)) {
-      setError("Password must be at least 8 characters and include a letter, a number, and a special character.");
-    } else if (data.password && value !== data.password) {
-      setError("Passwords do not match.");
-    } else {
-      setError("");
-    }
-  };
-
-  const handleNewPasswordKeyDown = (e) => {
-    if (e.key === "Enter") {
-      confirmRef.current.focus();
-    }
-  };
-
-  const handleConfirmPasswordKeyDown = (e) => {
-    if (e.key === "Enter" && !error && data.password && data.confirmPassword) {
-      handleSubmit(e);
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
+    setShowError(true);
 
-    if (!data.password || !data.confirmPassword) {
-      setError("Both fields are required.");
-      return;
-    }
-
-    if (!isPasswordValid(data.password)) {
-      setError("Password must be at least 8 characters and include a letter, a number, and a special character.");
+    if (!data.otp || !data.password || !data.confirmPassword) {
+      setError("Please fill all fields.");
       return;
     }
 
@@ -68,125 +26,115 @@ export default function SetNewPassword({ data, setData, onSubmit }) {
       return;
     }
 
-    setError("");
-    onSubmit();
+    if (!isValidPassword(data.password)) {
+      setError(
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+      );
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await Auth.forgotPasswordSubmit(data.email, data.otp, data.password);
+      setLoading(false);
+      setError("");
+      onNext(); // Navigate to success step
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Something went wrong.");
+    }
   };
 
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: "100vh", maxWidth: "400px", width: "100%", padding: "0 1rem" }}>
-      <div className="w-100">
-        <div className="mb-4 text-center">
+    <div
+      className="d-flex flex-column justify-content-center align-items-center w-100"
+      style={{ minHeight: "100vh", maxWidth: "400px", margin: "0 auto" }}
+    >
+      <div className="w-100 px-3">
+        <div className="text-center mb-4">
           <img src="/images/Logo.png" alt="Logo" style={{ height: "60px" }} />
         </div>
 
-        <h3 className="fw-bold text-center">Set New Password</h3>
-        <p className="text-center text-muted mb-4" style={{ fontSize: "14px" }}>
-          Your new password must be different from previously used passwords
-        </p>
+        <h3 className="fw-bold text-center mb-3">Set New Password</h3>
 
-        <form onSubmit={handleSubmit} className="w-100">
+        <form onSubmit={handleResetPassword}>
           <div className="mb-3">
-            <label htmlFor="newPassword" className="form-label fw-semibold mb-2">
-              New Password
-            </label>
-            <div className="input-icon-wrapper">
-              <input
-                type="password"
-                className={`form-control border-2 custom-focus ${error && newTouched ? "input-error" : ""}`}
-                id="newPassword"
-                placeholder="Enter new password"
-                value={data.password}
-                onChange={handleNewPasswordChange}
-                onKeyDown={handleNewPasswordKeyDown}
-              />
-              {error && newTouched && (
-                <img src="/images/Icon Set.svg" alt="Error" className="input-error-icon" />
-              )}
-            </div>
+            <label className="form-label fw-semibold mb-2">OTP Code</label>
+            <input
+              type="text"
+              className="form-control border-2 custom-focus"
+              value={data.otp}
+              onChange={(e) => setData({ ...data, otp: e.target.value })}
+              placeholder="Enter OTP sent to your email"
+            />
           </div>
 
           <div className="mb-3">
-            <label htmlFor="confirmPassword" className="form-label fw-semibold mb-2">
+            <label className="form-label fw-semibold mb-2">New Password</label>
+            <input
+              type="password"
+              className="form-control border-2 custom-focus"
+              value={data.password}
+              onChange={(e) => setData({ ...data, password: e.target.value })}
+              placeholder="Enter new password"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold mb-2">
               Confirm Password
             </label>
-            <div className="input-icon-wrapper">
-              <input
-                type="password"
-                ref={confirmRef}
-                className={`form-control border-2 custom-focus ${error && confirmTouched ? "input-error" : ""}`}
-                id="confirmPassword"
-                placeholder="Re-enter new password"
-                value={data.confirmPassword}
-                onChange={handleConfirmPasswordChange}
-                onKeyDown={handleConfirmPasswordKeyDown}
-              />
-              {error && confirmTouched && (
-                <img src="/images/Icon Set.svg" alt="Error" className="input-error-icon" />
-              )}
-            </div>
+            <input
+              type="password"
+              className="form-control border-2 custom-focus"
+              value={data.confirmPassword}
+              onChange={(e) =>
+                setData({ ...data, confirmPassword: e.target.value })
+              }
+              placeholder="Re-enter new password"
+            />
           </div>
 
-          {error && (newTouched || confirmTouched) && (
-            <div className="alert-box">
-              <img src="/images/security.svg" alt="Info" width={20} height={20} />
-              <div className="flex-grow-1">
-                <div className="fw-bold text-dark">Error</div>
-                <div>{error}</div>
+          {error && showError && (
+            <div
+              className="alert alert-danger d-flex align-items-start justify-content-between p-2 px-3 gap-2"
+              style={{ fontSize: "14px", borderRadius: "8px" }}
+            >
+              <div className="d-flex align-items-start gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="mt-1"
+                >
+                  <path d="M1 21h22L12 2 1 21zM12 16h-1v-1h2v1h-1zm0-2h-1v-4h2v4h-1z" />
+                </svg>
+                <span>{error}</span>
               </div>
-              <span className="close-icon" onClick={() => setError("")}>❌</span>
+              <svg
+                onClick={() => setShowError(false)}
+                xmlns="http://www.w3.org/2000/svg"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                style={{ cursor: "pointer", marginTop: "4px" }}
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
             </div>
           )}
 
           <button
             type="submit"
-            className="btn btn-primary w-100 mt-3"
+            className="btn btn-primary w-100"
             style={{ backgroundColor: "#1A1A52", height: "40px" }}
+            disabled={loading}
           >
-            Reset Password
+            {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
       </div>
-
-      <style>{`
-        .input-icon-wrapper {
-          position: relative;
-        }
-
-        .input-error-icon {
-          position: absolute;
-          right: 10px;
-          top: 50%;
-          transform: translateY(-50%);
-          height: 20px;
-          width: 20px;
-          pointer-events: none;
-        }
-
-        .input-error {
-          padding-right: 2.5rem;
-          border-color: #dc3545 !important;
-          background-image: none !important;
-        }
-
-        .alert-box {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-top: 8px;
-          padding: 8px 12px;
-          background-color: #f8d7da;
-          color: #842029;
-          border: 1px solid #f5c2c7;
-          border-radius: 4px;
-          font-size: 13px;
-        }
-
-        .close-icon {
-          font-size: 16px;
-          font-weight: bold;
-          cursor: pointer;
-        }
-      `}</style>
     </div>
   );
 }

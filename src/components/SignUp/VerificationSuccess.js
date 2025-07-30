@@ -9,6 +9,10 @@ export default function VerificationSuccess() {
   };
 
   return (
+  
+
+  <div className="d-flex vh-100">
+      <div className="flex-grow-1 d-flex justify-content-center align-items-center">
     <div className="container-fluid px-3">
       <div className="row vh-100">
         <div className="col-12 d-flex justify-content-center align-items-center">
@@ -55,5 +59,19 @@ export default function VerificationSuccess() {
         }
       `}</style>
     </div>
+      </div>
+      <div
+        className="d-none d-md-flex align-items-center justify-content-center"
+        style={{ width: "50%", backgroundColor: "#f8f9fa" }}
+      >
+        <img
+          src="/images/BG.png"
+          alt="Side"
+          className="img-fluid"
+          style={{ maxHeight: "90%", maxWidth: "90%", objectFit: "contain" }}
+        />
+      </div>
+    </div>
+
   );
 }

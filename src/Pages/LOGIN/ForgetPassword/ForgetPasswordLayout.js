@@ -3,47 +3,54 @@ import ForgotPassword from "../../../components/Login/ForgetPassword";
 import SetNewPassword from "../../../components/Login/SetNewpassword";
 import PasswordProcess from "../../../components/Login/PasswordProcess";
 import PasswordSuccess from "../../../components/Login/Passwordsuccess";
+import { Auth } from "aws-amplify";
 
 export default function ForgetPasswordLayout() {
   const [step, setStep] = useState(0);
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    code: "",
   });
 
-  const handleNext = () => setStep((prev) => prev + 1);
-  const handleBack = () => setStep((prev) => prev - 1);
+  const handleNext = async () => {
+    try {
+      await Auth.forgotPassword(formData.email);
+      setStep(1);
+    } catch (error) {
+      console.error("Forgot Password Error:", error);
+      alert(error.message || "Failed to send reset code.");
+    }
+  };
 
-  const handlePasswordSubmit = () => {
-    const { password, confirmPassword } = formData;
-    if (!password || !confirmPassword || password !== confirmPassword) {
+  const handlePasswordSubmit = async () => {
+    const { email, password, confirmPassword, code } = formData;
+    if (!password || password !== confirmPassword) {
       alert("Passwords do not match or are empty.");
       return;
     }
 
-    console.log("Collected form data to submit:", formData);
-    setStep(2); 
+    setStep(2);
 
-   
-    setTimeout(() => {
-      const isSuccess = true; 
-      if (isSuccess) {
-        console.log("Password update simulated success");
-        setStep(3); 
-      } else {
-        alert("Password update failed.");
-        setStep(1);
-      }
-    }, 1500);
+    try {
+      await Auth.forgotPasswordSubmit(email, code, password);
+      setTimeout(() => {
+        setStep(3);
+      }, 1500);
+    } catch (error) {
+      alert(error.message || "Failed to reset password.");
+      setStep(1);
+    }
   };
+
+  const handleBack = () => setStep((prev) => prev - 1);
 
   const props = {
     data: formData,
     setData: setFormData,
     onNext: handleNext,
-    onBack: handleBack
+    onBack: handleBack,
   };
 
   const renderStep = () => {

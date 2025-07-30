@@ -1,23 +1,23 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Auth } from "aws-amplify";
 import "../css/Login.css";
+
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "", general: "" });
   const [touched, setTouched] = useState({ email: false, password: false });
+  const [submitted, setSubmitted] = useState(false);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const navigate = useNavigate();
-
-  const dummyEmail = "neeraj@gmail.com";
-  const dummyPassword = "5683";
 
   const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const validate = () => {
     let valid = true;
-    const newErrors = { email: "", password: "" };
+    const newErrors = { email: "", password: "", general: "" };
 
     if (!formData.email) {
       newErrors.email = "Email is required.";
@@ -25,16 +25,10 @@ export default function Login() {
     } else if (!validateEmail(formData.email)) {
       newErrors.email = "Please enter a valid email address.";
       valid = false;
-    } else if (formData.email !== dummyEmail) {
-      newErrors.email = "This email is not registered.";
-      valid = false;
     }
 
     if (!formData.password) {
       newErrors.password = "Password is required.";
-      valid = false;
-    } else if (formData.password !== dummyPassword) {
-      newErrors.password = "Incorrect password.";
       valid = false;
     }
 
@@ -47,36 +41,66 @@ export default function Login() {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setTouched((prev) => ({ ...prev, [name]: true }));
 
-    const newErrors = { ...errors };
-
-    if (name === "email") {
-      if (!value) newErrors.email = "Email is required.";
-      else if (!validateEmail(value)) newErrors.email = "Please enter a valid email address.";
-      else if (value !== dummyEmail) newErrors.email = "This email is not registered.";
-      else newErrors.email = "";
+    if (submitted) {
+      const newErrors = { ...errors };
+      if (name === "email") {
+        if (!value) newErrors.email = "Email is required.";
+        else if (!validateEmail(value)) newErrors.email = "Please enter a valid email address.";
+        else newErrors.email = "";
+      }
+      if (name === "password") {
+        if (!value) newErrors.password = "Password is required.";
+        else newErrors.password = "";
+      }
+      setErrors(newErrors);
     }
-
-    if (name === "password") {
-      if (!value) newErrors.password = "Password is required.";
-      else if (value !== dummyPassword) newErrors.password = "Incorrect password.";
-      else newErrors.password = "";
-    }
-
-    setErrors(newErrors);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (e.target.name === "email" && !errors.email) passwordRef.current.focus();
-      else if (e.target.name === "password") handleSubmit(e);
+      if (e.target.name === "email" && validateEmail(formData.email)) {
+        passwordRef.current.focus();
+      } else if (e.target.name === "password") {
+        handleSubmit(e);
+      }
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) navigate("/");
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSubmitted(true);
+
+  if (!validate()) return;
+
+  setErrors({ email: "", password: "", general: "" });
+
+  console.log("🚀 Attempting sign-in with:", formData); // Show login credentials
+
+  // Optionally import config and log it
+  try {
+    const { COGNITO_CONFIG } = await import("../config/cognitoConfig");
+    console.log("⚙️ Cognito Config:", COGNITO_CONFIG);
+  } catch (configErr) {
+    console.error("❌ Error loading Cognito config:", configErr);
+  }
+
+  try {
+    const user = await Auth.signIn(formData.email, formData.password);
+    console.log("✅ Login success:", user);
+    navigate("/");
+  } catch (error) {
+ 
+
+    let general = "Login failed.";
+    if (error.code === "UserNotFoundException") general = "This email is not registered.";
+    else if (error.code === "NotAuthorizedException") general = "Incorrect password.";
+    else if (error.code === "UserNotConfirmedException") general = "Please verify your email first.";
+
+    setErrors((prev) => ({ ...prev, general }));
+  }
+};
+
 
   return (
     <div className="d-flex flex-column justify-content-between align-items-center px-4 py-5 position-relative w-100 h-100" style={{ maxWidth: "400px", margin: "0 auto" }}>
@@ -97,6 +121,7 @@ export default function Login() {
             </label>
             <div className="input-icon-wrapper">
               <input
+                id="email"
                 type="email"
                 name="email"
                 ref={emailRef}
@@ -106,9 +131,9 @@ export default function Login() {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
               />
-              {errors.email && <img src="/images/Icon Set.svg" alt="Error" className="input-error-icon" />}
+              {errors.email && submitted && <img src="/images/Icon Set.svg" alt="Error" className="input-error-icon" />}
             </div>
-            {touched.email && errors.email && (
+            {submitted && touched.email && errors.email && (
               <div className="alert-box">
                 <img src="/images/security.svg" alt="Info" width={20} height={20} />
                 <div className="flex-grow-1">
@@ -131,6 +156,7 @@ export default function Login() {
             </div>
             <div className="input-icon-wrapper">
               <input
+                id="password"
                 type="password"
                 name="password"
                 ref={passwordRef}
@@ -140,9 +166,9 @@ export default function Login() {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
               />
-              {errors.password && <img src="/images/Icon Set.svg" alt="Error" className="input-error-icon" />}
+              {errors.password && submitted && <img src="/images/Icon Set.svg" alt="Error" className="input-error-icon" />}
             </div>
-            {touched.password && errors.password && (
+            {submitted && touched.password && errors.password && (
               <div className="alert-box">
                 <img src="/images/security.svg" alt="Info" width={20} height={20} />
                 <div className="flex-grow-1">
@@ -153,6 +179,17 @@ export default function Login() {
               </div>
             )}
           </div>
+
+          {errors.general && (
+            <div className="alert-box">
+              <img src="/images/security.svg" alt="Info" width={20} height={20} />
+              <div className="flex-grow-1">
+                <div className="fw-bold text-dark">Error</div>
+                <div>{errors.general}</div>
+              </div>
+              <span className="close-icon" onClick={() => setErrors((prev) => ({ ...prev, general: "" }))}>❌</span>
+            </div>
+          )}
 
           <button
             type="submit"
@@ -175,7 +212,6 @@ export default function Login() {
         .input-icon-wrapper {
           position: relative;
         }
-
         .input-error-icon {
           position: absolute;
           right: 10px;
@@ -185,13 +221,11 @@ export default function Login() {
           width: 20px;
           pointer-events: none;
         }
-
         .input-error {
           padding-right: 2.5rem;
           border-color: #dc3545 !important;
           background-image: none !important;
         }
-
         .alert-box {
           display: flex;
           align-items: center;
@@ -204,7 +238,6 @@ export default function Login() {
           border-radius: 4px;
           font-size: 13px;
         }
-
         .close-icon {
           font-size: 16px;
           font-weight: bold;

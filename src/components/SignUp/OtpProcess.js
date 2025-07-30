@@ -1,15 +1,21 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function OtpProcess({ onNext = () => {} }) {
+export default function OtpProcess() {
+  const navigate = useNavigate();
   useEffect(() => {
     const timer = setTimeout(() => {
-      onNext();
+    navigate("/verification-success");
     }, 3000);
     return () => clearTimeout(timer);
-  }, [onNext]);
+  }, [navigate]);
 
   return (
-    <div className="container-fluid px-3">
+
+
+ <div className="d-flex vh-100">
+      <div className="flex-grow-1 d-flex justify-content-center align-items-center">
+       <div className="container-fluid px-3">
       <div className="row vh-100">
         <div className="col-12">
           <div className="d-flex flex-column justify-content-center align-items-center h-100 w-100 text-center">
@@ -65,5 +71,20 @@ export default function OtpProcess({ onNext = () => {} }) {
         }
       `}</style>
     </div>
+      </div>
+      <div
+        className="d-none d-md-flex align-items-center justify-content-center"
+        style={{ width: "50%", backgroundColor: "#f8f9fa" }}
+      >
+        <img
+          src="/images/BG.png"
+          alt="Side"
+          className="img-fluid"
+          style={{ maxHeight: "90%", maxWidth: "90%", objectFit: "contain" }}
+        />
+      </div>
+    </div>
+
+
   );
 }
